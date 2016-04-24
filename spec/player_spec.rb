@@ -11,7 +11,7 @@ module TicTacToe
       it 'gives a random move if there are no ranked options' do
         board = Board.new
         player = Player.new
-        allow(board).to receive(:give_valid_moves) { [[2,2]] }
+        allow(board).to receive(:valid_moves) { [[2,2]] }
         expect(player.move(board)).to eq [2,2]
       end
       
@@ -28,8 +28,6 @@ module TicTacToe
         
         expect(player.move(board)).to eq [3,3]
       end
-      
-    
     end
   
     describe '#next_move_state' do

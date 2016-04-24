@@ -10,15 +10,11 @@ module TicTacToe
     end
     
     it 'makes a grid with 3 rows by default' do
-      board = Board.new
-      expect(board.grid.size).to be == 3
+      expect(subject.grid.size).to eq 3
     end
     
     it 'makes a grid with 3 columns by default' do
-      board = Board.new
-      board.grid do |row|
-        expect(row.each.size).to be == 3
-      end
+      expect(subject.grid[0].size).to eq 3
     end
     
     describe '#grid' do
@@ -38,8 +34,7 @@ module TicTacToe
     end
     
     describe '#update_at' do
-      
-      it 'changes the grid contents at standard x/y coordinates' do
+      it 'changes the grid contents at coordinates' do
         board = Board.new(grid: [["X", nil, nil], [nil, nil, nil], [nil, nil, nil]])
         board.update_at([1,3], "Bongs")
         expect(board.grid).to eq [["Bongs", nil, nil], [nil, nil, nil], [nil, nil, nil]]
@@ -47,25 +42,21 @@ module TicTacToe
     end
     
     describe '#check_game_status' do
-      
       it 'returns :win when line_on_board? is true' do
-        board = Board.new
-        allow(board).to receive(:line_on_board?) { true }
-        expect(board.game_over).to eq :win
+        allow(subject).to receive(:line_on_board?) { true }
+        expect(subject.game_over).to eq :win
       end
       
       it 'returns :draw if line_on_board? is false and is_full? is true' do
-        board = Board.new
-        allow(board).to receive(:line_on_board?) { false }
-        allow(board).to receive(:board_full?) { true }
-        expect(board.game_over).to eq :draw
+        allow(subject).to receive(:line_on_board?) { false }
+        allow(subject).to receive(:board_full?) { true }
+        expect(subject.game_over).to eq :draw
       end
       
       it 'returns false if line_on_board? and is_full? are false' do
-        board = Board.new
-        allow(board).to receive(:line_on_board?) { false }
-        allow(board).to receive(:board_full?) { false }
-        expect(board.game_over).to eq false
+        allow(subject).to receive(:line_on_board?) { false }
+        allow(subject).to receive(:board_full?) { false }
+        expect(subject.game_over).to eq false
       end
       
       it 'returns :win when there is a straight line on the board' do
@@ -90,11 +81,9 @@ module TicTacToe
     end
     
     describe '#check_valid' do
-        
       it 'returns :off_board when is_on_board? returns false' do 
-        board = Board.new
-        allow(board).to receive(:is_on_board?) { false }
-        expect(board.check_valid([4,5])).to eq :off_board
+        allow(subject).to receive(:is_on_board?) { false }
+        expect(subject.check_valid([4,5])).to eq :off_board
       end
       
       it 'returns :is_taken when is_empty? returns false' do
@@ -103,13 +92,8 @@ module TicTacToe
         expect(board.check_valid([1,2])).to eq :is_taken
       end
 
-      context 'move is off the board' do
-      
-        it 'returns :off_board when move is off board' do 
-          board = Board.new
-          expect(board.check_valid([45, 67])).to eq :off_board
-        end
-        
+      it 'returns :off_board when move is off board' do 
+        expect(subject.check_valid([45, 67])).to eq :off_board
       end
       
       it 'returns :is_taken when marker already in spot' do
@@ -123,23 +107,22 @@ module TicTacToe
       end    
     end
     
-    describe '#give_valid_moves' do
+    describe '#valid_moves' do
       it 'returns an array containing the human coordinates of the only remaining space on a board' do
         board = Board.new(grid: [["X", "O", "X"], ["O", "X", "O"], [nil, "X", "O"]])
-        expect(board.give_valid_moves).to eq [[1,1]]
+        expect(board.valid_moves).to eq [[1,1]]
       end
       
       it 'returns an array containing multiple coordinates of remaining space on a board' do
         board = Board.new(grid: [["X", nil, nil], ["O", "X", "O"], [nil, "X", "O"]])
-        expect(board.give_valid_moves).to eq [[2,3],[3,3],[1,1]]
+        expect(board.valid_moves).to eq [[2,3],[3,3],[1,1]]
       end
     end
     
     describe '#number_of_nonblocks' do
     
       it 'returns 0 when there are no non-blocked lines on the board' do
-        board = Board.new
-        expect(board.number_of_nonblocks("@")).to eq 0
+        expect(subject.number_of_nonblocks("@")).to eq 0
       end
       
       it 'returns 1 when there is one non-blocked line on the board' do
@@ -155,5 +138,4 @@ module TicTacToe
       end
     end
   end
-
 end
